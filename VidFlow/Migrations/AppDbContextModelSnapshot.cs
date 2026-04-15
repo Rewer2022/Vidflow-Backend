@@ -87,96 +87,6 @@ namespace VidFlow.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Video", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("AgeRestriction")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ChannelId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("CommentsCount")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("DislikesCount")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("DurationSeconds")
-                        .HasColumnType("double precision");
-
-                    b.Property<bool>("IsAdminHidden")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsShort")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Language")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<int>("LikesCount")
-                        .HasColumnType("integer");
-
-                    b.PrimitiveCollection<string>("Resolutions")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.PrimitiveCollection<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VideoUrl1080p")
-                        .HasColumnType("text");
-
-                    b.Property<string>("VideoUrl360p")
-                        .HasColumnType("text");
-
-                    b.Property<string>("VideoUrl720p")
-                        .HasColumnType("text");
-
-                    b.Property<int>("ViewsCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Visibility")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("ChannelId");
-
-                    b.ToTable("Videos");
-                });
-
             modelBuilder.Entity("VidFlow.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -362,8 +272,14 @@ namespace VidFlow.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int>("DislikesCount")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("EndedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PeakViewersCount")
                         .HasColumnType("integer");
@@ -410,6 +326,33 @@ namespace VidFlow.Migrations
                     b.HasIndex("VideoId");
 
                     b.ToTable("LiveStreams");
+                });
+
+            modelBuilder.Entity("VidFlow.Models.LiveStreamInteraction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsLike")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("StreamId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StreamId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LiveStreamInteractions");
                 });
 
             modelBuilder.Entity("VidFlow.Models.LiveStreamMessage", b =>
@@ -777,20 +720,92 @@ namespace VidFlow.Migrations
 
             modelBuilder.Entity("Video", b =>
                 {
-                    b.HasOne("VidFlow.Models.Category", "Category")
-                        .WithMany("Videos")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.HasOne("VidFlow.Models.Channel", "Channel")
-                        .WithMany("Videos")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<bool>("AgeRestriction")
+                        .HasColumnType("boolean");
 
-                    b.Navigation("Category");
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid");
 
-                    b.Navigation("Channel");
+                    b.Property<Guid>("ChannelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CommentsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DislikesCount")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("DurationSeconds")
+                        .HasColumnType("double precision");
+
+                    b.Property<bool>("IsAdminHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsShort")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Language")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("integer");
+
+                    b.PrimitiveCollection<string>("Resolutions")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.PrimitiveCollection<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("VideoUrl1080p")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VideoUrl360p")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VideoUrl720p")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ViewsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ChannelId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("VidFlow.Models.Channel", b =>
@@ -871,6 +886,25 @@ namespace VidFlow.Migrations
                     b.Navigation("Channel");
 
                     b.Navigation("Video");
+                });
+
+            modelBuilder.Entity("VidFlow.Models.LiveStreamInteraction", b =>
+                {
+                    b.HasOne("VidFlow.Models.LiveStream", "Stream")
+                        .WithMany("Interactions")
+                        .HasForeignKey("StreamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Stream");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VidFlow.Models.LiveStreamMessage", b =>
@@ -1077,6 +1111,24 @@ namespace VidFlow.Migrations
                     b.Navigation("Video");
                 });
 
+            modelBuilder.Entity("Video", b =>
+                {
+                    b.HasOne("VidFlow.Models.Category", "Category")
+                        .WithMany("Videos")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("VidFlow.Models.Channel", "Channel")
+                        .WithMany("Videos")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Channel");
+                });
+
             modelBuilder.Entity("User", b =>
                 {
                     b.Navigation("Channel");
@@ -1084,15 +1136,6 @@ namespace VidFlow.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Subscriptions");
-                });
-
-            modelBuilder.Entity("Video", b =>
-                {
-                    b.Navigation("Dislikes");
-
-                    b.Navigation("Likes");
-
-                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("VidFlow.Models.Category", b =>
@@ -1116,12 +1159,23 @@ namespace VidFlow.Migrations
 
             modelBuilder.Entity("VidFlow.Models.LiveStream", b =>
                 {
+                    b.Navigation("Interactions");
+
                     b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("VidFlow.Models.Playlist", b =>
                 {
                     b.Navigation("PlaylistVideos");
+                });
+
+            modelBuilder.Entity("Video", b =>
+                {
+                    b.Navigation("Dislikes");
+
+                    b.Navigation("Likes");
+
+                    b.Navigation("Views");
                 });
 #pragma warning restore 612, 618
         }
