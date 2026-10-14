@@ -480,3 +480,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+VidFlow/appsettings.json
+VidFlow/appsettings.*.json
+!VidFlow/appsettings.example.json
+VidFlow/ffmpeg/
